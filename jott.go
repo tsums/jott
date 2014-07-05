@@ -1,32 +1,60 @@
 /*
     jott - a terminal note taking program
+    Written in Golang because reasons.
     Trevor Summerfield
     http://trevorsummerfield.com
-
 */
 
 package main
 
 import "fmt"
 import "os"
+import "strconv"
 
+// this function gets called whenever we can't parse user syntax
 func syntax() {
     fmt.Println("This is the syntax error message!")
+}
+// creates new jotts and adds them to the store
+func new(text []string) {
+    if (len(text) > 0) {
+        fmt.Println("Content was already given at the terminal.")
+    } else {
+        fmt.Println("Gonna ask for the content now.")
+    }
+}
+
+func list(num int) {
+    fmt.Println("you requested this many jotts: " + strconv.Itoa(num))
 }
 
 func main() {
 
     args := os.Args[1:]
 
+    // if no args, throw syntax message
     if len(args) == 0 {
         syntax()
-        return
+        os.Exit(1)
     }
 
-
-
-    if args[0] == "-n" || args[0] == "new"{
-        fmt.Println("Making a new jott!")
+    // if given new flag, check to see if we were given the jott
+    if args[0] == "n" || args[0] == "new" {
+        if (len(args) > 1) {
+            new(args[1:len(args)])
+        } else {
+            new([]string{})
+        }
+    // if given list flag, check to see if we were given the num
+    } else if (args[0] == "ls" || args[0] == "list") {
+        if len(args) == 2 {
+            num, _ := strconv.Atoi(args[1])
+            list(num)
+        } else {
+            list(5)
+        }
+    // we were given args, but they didn't mean anything
+    // throw syntax message and quit
     } else {
         syntax()
     }
