@@ -7,9 +7,18 @@
 
 package main
 
-import "fmt"
-import "os"
-import "strconv"
+import (
+    "fmt"
+    "os"
+    "strconv"
+    "github.com/HouzuoGuo/tiedot/db"
+)
+
+// constants and vars and stuff
+
+var dbHome string
+
+
 
 // this function gets called whenever we can't parse user syntax
 func syntax() {
@@ -28,7 +37,36 @@ func list(num int) {
     fmt.Println("you requested this many jotts: " + strconv.Itoa(num))
 }
 
+func makeDB() {
+
+    jDB , err := db.OpenDB(dbHome)
+
+    if (err != nil) {
+        panic(err)
+    }
+    if err := jDB.Create("jotts"); err != nil {
+        panic(err)
+    }
+}
+
 func main() {
+
+    dbHome = ".jott"
+    // check to see if there is a db here, make one if not
+    if _, err := os.Stat(dbHome); err != nil {
+        fmt.Println("Making .jott file at current wrkdir")
+        makeDB()
+        os.Exit(0)
+    // if there was, open it
+    } else {
+        jDB , err := db.OpenDB(dbHome)
+        if err != nil {
+            panic(err)
+        }
+        for _, name := range jDB.AllCols() {
+            fmt.Printf("I have a collection called %s\n", name)
+        }
+    }
 
     args := os.Args[1:]
 
@@ -36,6 +74,21 @@ func main() {
     if len(args) == 0 {
         syntax()
         os.Exit(1)
+    }
+
+    if args[0] == "purge" {
+        var resp string
+        fmt.Printf("Purge all jott information? [y/N]: ")
+        fmt.Scanln(&resp)
+
+        if resp == "Y" || resp == "y" {
+            os.RemoveAll(".jott")
+            fmt.Println("purged jott db")
+            os.Exit(0)
+        } else {
+            fmt.Println("not purging jotts")
+            os.Exit(0)
+        }
     }
 
     // if given new flag, check to see if we were given the jott
