@@ -25,7 +25,7 @@ var jDB db.DB
 
 // this function gets called whenever we can't parse user syntax
 func syntax() {
-    fmt.Println("This is the syntax error message!")
+    fmt.Println("This is the syntax error message!\nIn the future, this should be useful.")
 }
 // creates new jotts and adds them to the store
 func new(text []string) {
