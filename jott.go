@@ -13,7 +13,9 @@ import (
     "fmt"
     "os"
     "strconv"
+    "bufio"
     "time"
+    "strings"
     "github.com/HouzuoGuo/tiedot/db"
 )
 
@@ -23,35 +25,54 @@ var dbHome string
 var jDB db.DB
 
 
+func msToTime(ms string) (time.Time, error) {
+    msInt, err := strconv.ParseInt(ms, 10, 64)
+    if err != nil {
+        return time.Time{}, err
+    }
+
+    return time.Unix(0, msInt*int64(time.Millisecond)), nil
+}
+
 // this function gets called whenever we can't parse user syntax
 func syntax() {
     fmt.Println("This is the syntax error message!\nIn the future, this should be useful.")
 }
 // creates new jotts and adds them to the store
 func new(text []string) {
-    if (len(text) > 0) {
-        fmt.Println("Content was already given at the terminal.")
-    } else {
-        fmt.Println("Gonna ask for the content now.")
+    if (len(text) <= 0) {
+        scanner := bufio.NewScanner(os.Stdin)
+        var line string
+        for scanner.Scan() {
+            line = scanner.Text()
+            text = append(text, line)
+        }
     }
-}
-
-func list(num int) {
-    fmt.Println("you requested this many jotts: " + strconv.Itoa(num))
 
     jDB , err := db.OpenDB(dbHome)
     if err != nil {
         panic(err)
     }
 
+    fText := strings.Join(text, " ")
+    if len(fText) == 0 {
+        fmt.Println("jott:\tNothing entered, quitting.")
+        os.Exit(4)
+    }
+
     jotts := jDB.Use("jotts")
 
-    docID, err := jotts.Insert(map[string]interface{}{"timestamp": int32(time.Now().Unix()),"text": "golang.org"})
+    jotts.Insert(map[string]interface{}{"timestamp": int(time.Now().Unix()),"text": fText})
+    fmt.Println("jott:\t jott stored.")
+
+}
+
+func list(num int) {
+    jDB , err := db.OpenDB(dbHome)
     if err != nil {
         panic(err)
     }
-    fmt.Println(docID)
-
+    jotts := jDB.Use("jotts")
     var query interface{}
     json.Unmarshal([]byte(`[{"has": ["timestamp"]}]`), &query)
 
@@ -66,7 +87,9 @@ func list(num int) {
 		if err != nil {
 			panic(err)
 		}
-		fmt.Printf("Query returned document %v\n", readBack)
+        fmt.Print(readBack["timestamp"])
+        fmt.Printf("\t")
+		fmt.Println(readBack["text"])
 	}
 
 }
@@ -121,6 +144,8 @@ func main() {
             os.Exit(0)
         }
     }
+
+    //new stuff since last commit
 
     // if given new flag, check to see if we were given the jott
     if args[0] == "n" || args[0] == "new" {
