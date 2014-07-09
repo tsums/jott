@@ -18,7 +18,9 @@ Makes use of [tiedot](http://github.com/HouzouGuo/tideot) for data storage and r
 Places .jott directory in the user's $HOME.
 
 Installation:
+
 1. Install [Go](http://golang.org) and follow [this guide](http://golang.org/doc/code.html) on setting up your Go workspace.
+
 2. Execute the following in your terminal:
 ```
 go get github.com/tsums/jott
