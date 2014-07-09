@@ -22,8 +22,8 @@ Installation:
 1. Install [Go](http://golang.org) and follow [this guide](http://golang.org/doc/code.html) on setting up your Go workspace.
 
 2. Execute the following in your terminal:
-```
-go get github.com/tsums/jott
-go install github.com/tsums/jott
-```
+    ```
+    go get github.com/tsums/jott
+    go install github.com/tsums/jott
+    ```
 3. Enjoy running __jott__!
