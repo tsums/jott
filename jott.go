@@ -61,8 +61,8 @@ func new(text []string) {
 
     jotts := jDB.Use("jotts")
     // insert the text with a unix timestamp.
-    jotts.Insert(map[string]interface{}{"timestamp": strconv.Itoa(int(time.Now().Unix())),"text": fText})
-    fmt.Println(strconv.Itoa(int(time.Now().Unix())))
+    timestamp := strconv.Itoa(int(time.Now().Unix()))
+    jotts.Insert(map[string]interface{}{"timestamp": timestamp,"text": fText})
     fmt.Println("jott:\t jott stored.")
 
 }
