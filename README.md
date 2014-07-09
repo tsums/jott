@@ -14,7 +14,7 @@ Planned features (in the form of command line args):
 
 * purge:                 purge the entire jot database from disk (with [y/N] confirmation)
 
-Makes use of [tiedot](http://github.com/HouzouGuo/tideot) for data storage and retrieval.
+Makes use of [tiedot](http://github.com/HouzuoGuo/tideot) for data storage and retrieval.
 Places .jott directory in the user's $HOME.
 
 Installation:
