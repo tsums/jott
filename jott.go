@@ -15,9 +15,11 @@ import (
     "os"
     "strconv"
     "bufio"
+    "io/ioutil"
     "time"
     "strings"
     "github.com/HouzuoGuo/tiedot/db"
+    "code.google.com/p/go.crypto/ssh/terminal"
 )
 
 // constants and vars and stuff
@@ -61,10 +63,10 @@ func new(text []string) {
 
     jotts := jDB.Use("jotts")
     // insert the text with a unix timestamp.
-    timestamp := strconv.Itoa(int(time.Now().Unix()))
+    //timestamp := strconv.Itoa(int(time.Now().Unix()))
+    timestamp := strings.Split(time.Now().String(),".")[0]
     jotts.Insert(map[string]interface{}{"timestamp": timestamp,"text": fText})
     fmt.Println("jott:\t jott stored.")
-
 }
 
 func list(num int) {
@@ -91,8 +93,6 @@ func list(num int) {
 			panic(err)
 		}
 
-//        s := readBack["timestamp"].(int64)
-
         fmt.Print(readBack["timestamp"])
         fmt.Printf("\t")
 		fmt.Println(readBack["text"])
@@ -101,7 +101,6 @@ func list(num int) {
     if len(queryResult) == 0 {
         fmt.Println("jott:\tno jotts found.")
     }
-
 }
 
 func makeDB() {
@@ -129,6 +128,11 @@ func main() {
     if _, err := os.Stat(dbHome); err != nil {
         fmt.Println("init: Database not Found.\ninit: Making .jott file at: " + dbHome)
         makeDB()
+    }
+
+    if ! terminal.IsTerminal(0) {
+        b, _ := ioutil.ReadAll(os.Stdin)
+        new([]string{string(b)})
         os.Exit(0)
     }
 
@@ -172,6 +176,6 @@ func main() {
             new([]string{})
         }
     } else {
-        fmt.Println("jott:\tcommand not recognized: run 'jott help' for syntax.")
+        new(args)
     }
 }
