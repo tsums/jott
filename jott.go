@@ -20,6 +20,7 @@ import (
     "strings"
     "github.com/HouzuoGuo/tiedot/db"
     "code.google.com/p/go.crypto/ssh/terminal"
+    'github.com/atotto/clipboard"
 )
 
 // constants and vars and stuff
