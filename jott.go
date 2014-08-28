@@ -6,6 +6,13 @@
     http://trevorsummerfield.com
 */
 
+/*  TODO:
+ *      -Add numbered id's to list.
+ *      -Add pagination to list.
+ *      -Add copy jotts to clipboard.
+ *      -Add deleting of specific jotts.
+ */
+
 package main
 
 // imports, man
